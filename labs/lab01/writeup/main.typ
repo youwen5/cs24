@@ -15,11 +15,20 @@
 
 #outline()
 
+#codly(languages: codly-languages)
+
 #show link: underline
 
 = Prelude
 
-
+Code available on
+#link("https://github.com/youwen5/cs24/tree/main/labs/lab01/code")[GitHub]. A
+reproducible build environment is included, if you have
+#link("https://nixos.org/")[Nix] installed, you can run
+```sh
+nix build github:youwen5/cs24#labs.lab01
+result/bin/3sum_analysis
+```
 
 = Runtime analysis
 
@@ -137,7 +146,6 @@ Below is the brute-force solution using 3 nested for loops.
 
 #figure(caption: "naive solution")[
   #codly(
-    languages: codly-languages,
     highlights: (
       (line: 11, start: 0, end: none, label: <loop-1>, tag: [Loop 1]),
       (line: 12, start: 0, end: none, label: <loop-2>, tag: [Loop 2]),
