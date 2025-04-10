@@ -3,10 +3,15 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    zen-typ.url = "github:youwen5/zen.typ";
   };
 
   outputs =
-    { self, nixpkgs }:
+    {
+      self,
+      nixpkgs,
+      zen-typ,
+    }:
     let
       forAllSystems = nixpkgs.lib.genAttrs [
         "aarch64-darwin"
@@ -23,7 +28,13 @@
         in
         {
           labs = {
-            lab01 = pkgs.callPackage ./labs/lab01/code/default.nix { };
+            lab01 = {
+              code = pkgs.callPackage ./labs/lab01/code { };
+              writeup = pkgs.callPackage ./labs/lab01/writeup {
+                inherit zen-typ;
+                flakeSelf = self;
+              };
+            };
           };
         }
       );
