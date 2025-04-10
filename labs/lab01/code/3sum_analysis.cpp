@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <chrono>
+#include <fstream>
 #include <iostream>
+#include <map>
+#include <random>
 #include <vector>
 using namespace std;
 
@@ -33,26 +36,69 @@ vector<vector<int>> threeSum(vector<int> &nums) {
   return result;
 }
 
+double average(vector<double> vec) {
+  double sum = 0;
+  for (auto num : vec) {
+    sum += num;
+  }
+  return sum / vec.size();
+}
+
 int main(int argc, char *argv[]) {
-  vector<int> nums;
-  nums.push_back(4);
-  nums.push_back(-5);
-  nums.push_back(4);
-  nums.push_back(-2);
-  nums.push_back(-8);
-  auto start = chrono::high_resolution_clock::now();
-  vector<vector<int>> result = threeSum(nums);
-  auto end = chrono::high_resolution_clock::now();
-  double time_ms =
-      chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0;
-  for (auto c : result) {
-    for (auto b : c) {
-      cout << b << " ";
+  mt19937 gen(12345);
+  unsigned samplePoints[] = {100, 200, 400, 800, 1600, 3200};
+  vector<int> *nums;
+  vector<vector<int>> *result;
+  uniform_int_distribution<> distrib(-100000, 100000);
+  unsigned runs = 3;
+
+  map<unsigned, vector<double>> times;
+
+  cout << "doing 3 runs..." << endl;
+
+  for (unsigned i = 0; i < runs; i++) {
+    for (auto ct : samplePoints) {
+      nums = new vector<int>;
+      result = new vector<vector<int>>;
+      for (unsigned j = 0; j < ct; j++) {
+        nums->push_back(distrib(gen));
+      }
+      auto start = chrono::high_resolution_clock::now();
+      result = new vector<vector<int>>(threeSum(*nums));
+      auto end = chrono::high_resolution_clock::now();
+      double time_ms =
+          chrono::duration_cast<chrono::microseconds>(end - start).count() /
+          1000.0;
+
+      cout << "testing n=" << ct << " samples" << endl;
+      cout << "time taken: " << time_ms << endl;
+
+      times.emplace(ct, 0);
+      times.at(ct).push_back(time_ms);
+
+      delete nums;
+      delete result;
     }
-    cout << endl;
   }
 
-  cout << "time taken: " << time_ms << endl;
+  fstream csv;
+
+  if (argc > 1) {
+    cout << "going to write file " << argv[1] << endl;
+    csv.open(argv[1]);
+    if (!csv.is_open()) {
+      cout << "error: could not open file" << endl;
+      return 1;
+    }
+    csv << "samples,ms" << endl;
+    for (auto xs : times) {
+      csv << xs.first << "," << average(xs.second) << endl;
+    }
+
+    csv.close();
+
+    cout << "wrote output to " << argv[1] << endl;
+  }
 
   return 0;
 }
