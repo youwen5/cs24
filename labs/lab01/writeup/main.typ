@@ -34,7 +34,7 @@ Additionally, you may reproducibly compile this document as well using Nix.
 ```sh
 nix build github:youwen5/cs24#labs.lab01.writeup
 # pdf available at result/main.pdf
-````
+```
 
 = Runtime analysis
 
