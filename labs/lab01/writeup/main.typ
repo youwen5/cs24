@@ -24,11 +24,17 @@
 Code available on
 #link("https://github.com/youwen5/cs24/tree/main/labs/lab01/code")[GitHub]. A
 reproducible build environment is included, if you have
-#link("https://nixos.org/")[Nix] installed, you can run
+#link("https://nixos.org/")[Nix] with flakes installed, you can run
 ```sh
-nix build github:youwen5/cs24#labs.lab01
+nix build github:youwen5/cs24#labs.lab01.code
 result/bin/3sum_analysis
 ```
+
+Additionally, you may reproducibly compile this document as well using Nix.
+```sh
+nix build github:youwen5/cs24#labs.lab01.writeup
+# pdf available at result/main.pdf
+````
 
 = Runtime analysis
 
