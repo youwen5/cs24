@@ -4,64 +4,64 @@
   fetchFromGitHub,
 }:
 {
+  name ? null,
+  pname ? null,
+  version ? null,
+  src,
   unixTime ? 0,
   fontPaths ? [ ],
-  packages ? [ ],
+  typstPackages ? [ ],
+  postPackagePhase ? "",
   stdenv ? stdenvNoCC,
-  nativeBuildInputs,
-  buildInputs,
+  nativeBuildInputs ? [ ],
+  buildInputs ? [ ],
+  packagesHash ? "",
+  typstPackagesRev ? "7b657a93ca4aa28758b75d71bcb3135275771724",
+  documentRoot ? "main.typ",
+  typst-packages-src,
   ...
 }@attrs:
 let
-  typst-packages-src = fetchFromGitHub {
-    owner = "typst";
-    repo = "packages";
-    rev = "7b657a93ca4aa28758b75d71bcb3135275771724";
-    hash = "sha256-S746ZI5FIFu482AlaF0lDoxIOAgqF64gD/sYdAZUNjk=";
-    sparseCheckout = [
-      "packages/preview/cetz-plot"
-      "packages/preview/cetz"
-      "packages/preview/showybox"
-      "packages/preview/ctheorems"
-      "packages/preview/codly"
-      "packages/preview/codly-languages"
-      "packages/preview/oxifmt"
-    ];
-  };
-  typst-packages-cache = stdenvNoCC.mkDerivation {
+  typst-packages-cache = stdenv.mkDerivation {
     name = "typst-packages-cache";
     src = "${typst-packages-src}/packages";
     dontBuild = true;
-    installPhase = ''
-      mkdir -p "$out/typst/packages/youwen/zen/0.5.0"
-      cp -LR --reflink=auto --no-preserve=mode -t "$out/typst/packages" "$src"/*
-      cp -LR --reflink=auto --no-preserve=mode -t "$out/typst/packages/youwen/zen/0.5.0" "${zen-typ}/typst"/*
-    '';
+    installPhase =
+      ''
+        mkdir -p "$out/typst/packages"
+        cp -LR --reflink=auto --no-preserve=mode -t "$out/typst/packages" "$src"/*
+      ''
+      + postPackagePhase;
+  };
+  font-paths = fontPaths;
+  generateFontCommands = builtins.map (x: "cp -r " + x + " $out");
+  font-packages = stdenv.mkDerivation {
+    name = "fonts";
+    phases = [ "installPhase" ];
+    installPhase =
+      ''
+        mkdir -p $out
+      ''
+      + builtins.concatStringsSep "\n" (generateFontCommands font-paths);
   };
 in
-stdenvNoCC.mkDerivation {
-  name = "lab01-writeup";
-
-  src = ./.;
+stdenv.mkDerivation {
+  inherit
+    name
+    pname
+    version
+    src
+    buildInputs
+    ;
 
   XDG_CACHE_HOME = typst-packages-cache;
-  SOURCE_DATE_EPOCH = builtins.toString flakeSelf.lastModified;
+  SOURCE_DATE_EPOCH = unixTime;
 
-  nativeBuildInputs = [
-    typst
-  ];
+  nativeBuildInputs = [ typst ] ++ nativeBuildInputs;
 
   buildPhase = ''
-    # create home dir in nix build environment
-    export HOME="$(mktemp -d)"
-    mkdir -p $HOME/.local/share/fonts
-    # lualatex needs to know where to get fonts
-    export TYPST_FONT_PATHS=$HOME/.local/share/fonts
-
-    # "install" fonts so Typst can find them
-    cp -r ${liberation_ttf}/share/fonts/truetype $HOME/.local/share/fonts
-
-    typst compile main.typ
+    export TYPST_FONT_PATHS=${font-packages}
+    typst compile "${documentRoot}" "main.pdf"
   '';
 
   installPhase = ''

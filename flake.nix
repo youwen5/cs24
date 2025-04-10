@@ -33,6 +33,8 @@
               writeup = pkgs.callPackage ./labs/lab01/writeup {
                 inherit zen-typ;
                 flakeSelf = self;
+                resolvePackagesPath = builtins.map (x: "packages/preview/" + x);
+                mkTypstDerivation = pkgs.callPackage ./labs/lab01/writeup/mkTypstDerivation.nix { };
               };
             };
           };
