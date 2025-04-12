@@ -30,7 +30,7 @@ nix build github:youwen5/cs24#labs.lab01.code
 result/bin/3sum_analysis
 ```
 
-Additionally, you may reproducibly compile this document as well using Nix.
+Additionally, in the same Git tree, you will find the source code of this document alongside the plotting code (written using CeTZ). You may reproducibly compile this document as well using Nix.
 ```sh
 nix build github:youwen5/cs24#labs.lab01.writeup
 # pdf available at result/main.pdf
@@ -45,77 +45,79 @@ An empirical analysis was performed using various sample sizes, up to $n =
 store the runtimes in a `map` of `vector<double>` keyed by the sample size.
 Then we take their average and plot it, as in @raw-plot.
 
-// Load the data from a CSV file.
-#let data = csv("data.csv", row-type: dictionary)
+#[
+  // Load the data from a CSV file.
+  #let data = csv("data.csv", row-type: dictionary)
 
-// Cast data types
-#let widths = data.map(x => int(x.samples))
-#let heights = data.map(x => float(x.ms))
+  // Cast data types
+  #let widths = data.map(x => int(x.samples))
+  #let heights = data.map(x => float(x.ms))
 
-#numbered-figure(caption: "Raw plot")[
-  // Create coordinates
-  #let coords = widths.zip(heights)
+  #numbered-figure(caption: "Raw plot")[
+    // Create coordinates
+    #let coords = widths.zip(heights)
 
-  #cetz.canvas({
-    import cetz.draw: *
-    import cetz-plot: *
+    #cetz.canvas({
+      import cetz.draw: *
+      import cetz-plot: *
 
-    plot.plot(
-      legend: "inner-north-west",
-      x-label: [Sample size, $n$],
-      y-label: [Runtime, $T(n)$ (ms, average of 3)],
-      size: (12, 8),
-      {
-        plot.add(
-          coords,
-          mark: "o",
-          line: "spline",
-          label: "Actual",
-        )
-        plot.add(
-          domain: (0, 3250),
-          label: "Derived power-law",
-          t => (calc.pow(2, -19.4) * calc.pow(t, 3.018)),
-        )
-      },
-    )
-  })
-]<raw-plot>
+      plot.plot(
+        legend: "inner-north-west",
+        x-label: [Sample size, $n$],
+        y-label: [Runtime, $T(n)$ (ms, average of 3)],
+        size: (12, 8),
+        {
+          plot.add(
+            coords,
+            mark: "o",
+            line: "spline",
+            label: "Actual",
+          )
+          plot.add(
+            domain: (0, 3250),
+            label: "Derived power-law",
+            t => (calc.pow(2, -19.4) * calc.pow(t, 3.018)),
+          )
+        },
+      )
+    })
+  ]<raw-plot>
 
-#numbered-figure(caption: "log-log plot")[
-  #let widths-log = widths.map(x => calc.log(x, base: 2))
-  #let heights-log = heights.map(x => calc.log(x, base: 2))
-  #let coords = widths-log.zip(heights-log)
-  #cetz.canvas({
-    import cetz.draw: *
-    import cetz-plot: *
+  #numbered-figure(caption: "log-log plot")[
+    #let widths-log = widths.map(x => calc.log(x, base: 2))
+    #let heights-log = heights.map(x => calc.log(x, base: 2))
+    #let coords = widths-log.zip(heights-log)
+    #cetz.canvas({
+      import cetz.draw: *
+      import cetz-plot: *
 
-    plot.plot(
-      legend: "inner-north-west",
-      x-label: [$log_2(n)$],
-      y-label: [$log_2(T(n))$ (ms, average of 3)],
-      x-min: calc.min(..widths-log) - 0.5,
-      y-min: 0,
-      size: (12, 8),
-      y-ticks: heights-log,
-      x-ticks: widths-log,
-      x-tick-step: none,
-      y-tick-step: none,
-      {
-        plot.add(
-          coords,
-          mark: "o",
-          line: "linear",
-          label: "Actual",
-        )
-        plot.add(
-          domain: (6.64, calc.max(..widths-log)),
-          label: "Derived power-law",
-          t => (3.018 * t - 19.4),
-        )
-      },
-    )
-  })
+      plot.plot(
+        legend: "inner-north-west",
+        x-label: [$log_2(n)$],
+        y-label: [$log_2(T(n))$ (ms, average of 3)],
+        x-min: calc.min(..widths-log) - 0.5,
+        y-min: 0,
+        size: (12, 8),
+        y-ticks: heights-log,
+        x-ticks: widths-log,
+        x-tick-step: none,
+        y-tick-step: none,
+        {
+          plot.add(
+            coords,
+            mark: "o",
+            line: "linear",
+            label: "Actual",
+          )
+          plot.add(
+            domain: (6.64, calc.max(..widths-log)),
+            label: "Derived power-law",
+            t => (3.018 * t - 19.4),
+          )
+        },
+      )
+    })
+  ]
 ]
 
 == Derivation of power-law form
@@ -132,7 +134,7 @@ $
 
 == Analysis
 
-We have three nested loops, (and one more that seems to have negligible $O(n)$
+We have three nested loops, (and one more that seems to have negligible $O(1)$
 runtime) so we expect our time complexity to be $O(N^3)$, which is exactly what
 our empirical analysis shows.
 
@@ -141,8 +143,192 @@ plot, we can easily extract a linear equation that can be converted to the
 cubic power-law form, which matches up with our real world data nicely.
 
 Overall we observed that the big-$O$ analysis is extremely accurate to the real
-world results. Our empirical analysis showed that the the runtime scaled almost
+world results. Our empirical analysis showed that the runtime scaled almost
 exactly according to $n^3$ scaled by a constant factor.
+
+= Optimized solution
+
+== Graphs and plots
+
+I coded a more optimal solution with $O(N^2)$ runtime (although the raw runtime was still not very fast, only in the $5^"th"$ percentile). It was accepted on Leetcode and did not run into an out-of-time error.
+
+In the graphs, we can see that the derived formula holds up for $n <= 3200$ but diverges quickly as the sample size increases. This is likely due to some operations that are $O(1)$ for small $n$ becoming $O(n)$ for very large $n$.
+
+#[
+  // Load the data from a CSV file.
+  #let data = csv("optimized_data.csv", row-type: dictionary)
+
+  // Cast data types
+  #let widths = data.map(x => int(x.samples))
+  #let heights = data.map(x => float(x.ms))
+
+  #numbered-figure(caption: "Raw plot")[
+    // Create coordinates
+    #let coords = widths.zip(heights)
+
+    #cetz.canvas({
+      import cetz.draw: *
+      import cetz-plot: *
+
+      plot.plot(
+        legend: "inner-north-west",
+        x-label: [Sample size, $n$],
+        y-label: [Runtime, $T(n)$ (ms, average of 3)],
+        size: (12, 8),
+        {
+          plot.add(
+            coords,
+            mark: "o",
+            line: "spline",
+            label: "Actual",
+          )
+          plot.add(
+            domain: (0, 8000),
+            label: "Derived power-law",
+            t => (calc.pow(2, -13.08) * calc.pow(t, 1.972)),
+          )
+        },
+      )
+    })
+  ]<raw-plot-optimized>
+
+  #numbered-figure(caption: "log-log plot")[
+    #let widths-log = widths.map(x => calc.log(x, base: 2))
+    #let heights-log = heights.map(x => calc.log(x, base: 2))
+    #let coords = widths-log.zip(heights-log)
+    #cetz.canvas({
+      import cetz.draw: *
+      import cetz-plot: *
+
+      plot.plot(
+        legend: "inner-north-west",
+        x-label: [$log_2(n)$],
+        y-label: [$log_2(T(n))$ (ms, average of 3)],
+        x-min: calc.min(..widths-log) - 0.5,
+        y-min: 0,
+        size: (12, 8),
+        y-ticks: heights-log,
+        x-ticks: widths-log,
+        x-tick-step: none,
+        y-tick-step: none,
+        {
+          plot.add(
+            coords,
+            mark: "o",
+            line: "linear",
+            label: "Actual",
+          )
+          plot.add(
+            domain: (6.64, calc.max(..widths-log)),
+            label: "Derived power-law",
+            t => (1.972 * t - 13.08),
+          )
+        },
+      )
+    })
+  ]
+]
+
+== Power-law derivation
+
+Using the endpoints of the linearized log-log plot, we obtain a slope
+$
+  m = (0.01 - 9.87) / (6.64 - 11.64) = 1.972
+$
+and $y$-intercept $b = -13.08$. Then
+$
+  log_2 (T(n)) &= 1.972 dot log_2 (n) -13.08 \
+  T(n) &= 2^(-13.08) dot n^1.972
+$
+
+== Comparison
+
+#[
+  // Load the data from a CSV file.
+  #let data = csv("optimized_data.csv", row-type: dictionary)
+  // Load the data from a CSV file.
+  #let unoptimized-data = csv("data.csv", row-type: dictionary)
+
+  // Cast data types
+  #let widths = data.map(x => int(x.samples))
+  #let heights = data.map(x => float(x.ms))
+
+  // Cast data types
+  #let unoptimized-widths = unoptimized-data.map(x => int(x.samples))
+  #let unoptimized-heights = unoptimized-data.map(x => float(x.ms))
+
+  #numbered-figure(caption: "Raw plot")[
+    // Create coordinates
+    #let coords = widths.zip(heights)
+    #let unoptimized-coords = unoptimized-widths.zip(unoptimized-heights)
+
+    #cetz.canvas({
+      import cetz.draw: *
+      import cetz-plot: *
+
+      plot.plot(
+        legend: "inner-north-west",
+        x-label: [Sample size, $n$],
+        y-label: [Runtime, $T(n)$ (ms, average of 3)],
+        size: (12, 8),
+        {
+          plot.add(
+            coords,
+            mark: "o",
+            line: "spline",
+            label: "Brute force",
+          )
+          plot.add(
+            unoptimized-coords,
+            mark: "o",
+            line: "spline",
+            label: "Optimized",
+          )
+        },
+      )
+    })
+  ]<raw-plot-optimized>
+
+  #numbered-figure(caption: "log-log plot")[
+    #let widths-log = widths.map(x => calc.log(x, base: 2))
+    #let heights-log = heights.map(x => calc.log(x, base: 2))
+    #let coords = widths-log.zip(heights-log)
+    #let widths-log = unoptimized-widths.map(x => calc.log(x, base: 2))
+    #let heights-log = unoptimized-heights.map(x => calc.log(x, base: 2))
+    #let unoptimized-coords = widths-log.zip(heights-log)
+    #cetz.canvas({
+      import cetz.draw: *
+      import cetz-plot: *
+
+      plot.plot(
+        legend: "inner-north-west",
+        x-label: [$log_2(n)$],
+        y-label: [$log_2(T(n))$ (ms, average of 3)],
+        x-min: calc.min(..widths-log) - 0.5,
+        y-min: 0,
+        size: (12, 8),
+        y-ticks: heights-log,
+        x-ticks: widths-log,
+        x-tick-step: none,
+        y-tick-step: none,
+        {
+          plot.add(
+            coords,
+            mark: "o",
+            line: "linear",
+            label: "Brute force",
+          )
+          plot.add(
+            unoptimized-coords,
+            mark: "o",
+            line: "spline",
+            label: "Optimized",
+          )
+        },
+      )
+    })
+  ]
+]
 
 = Code
 
@@ -259,6 +445,62 @@ for (unsigned i = 0; i < runs; i++) {
 }
 ```
 
+== Optimized solution
+
+#codly()
+```cpp
+// assume vectors are same length
+bool vectorsAreEqual(const vector<int> &vec1, const vector<int> &vec2) {
+  for (unsigned i = 0; i < vec1.size(); i++) {
+    if (vec1.at(i) != vec2.at(i)) {
+      return false;
+    }
+  }
+  return true;
+}
+vector<vector<int>> threeSumOptimized(vector<int> &nums) {
+  vector<vector<int>> result;
+  unordered_set<int> set;
+  sort(nums.begin(), nums.end());
+  if (nums.at(nums.size() - 1) < 0 || nums.at(0) > 0) {
+    return result;
+  }
+  int ptr1;
+  int ptr2;
+
+  int sum;
+
+  for (ptr1 = 0; ptr1 < nums.size(); ptr1++) {
+    for (ptr2 = ptr1 + 1; ptr2 < nums.size(); ptr2++) {
+      if (set.contains(nums.at(ptr2))) {
+        vector<int> elem;
+        elem.push_back(nums.at(ptr1));
+        elem.push_back(nums.at(ptr2));
+        elem.push_back(-(nums.at(ptr1) + nums.at(ptr2)));
+        result.push_back(elem);
+      }
+      sum = nums.at(ptr1) + nums.at(ptr2);
+      set.insert(-sum);
+    }
+    set.clear();
+    while (ptr1 + 1 < nums.size() && nums.at(ptr1) == nums.at(ptr1 + 1)) {
+      ptr1++;
+    }
+  }
+  ptr1 = 0;
+  ptr2 = 0;
+  while (ptr1 < result.size()) {
+    while (ptr2 + 1 < result.size() &&
+           vectorsAreEqual(result.at(ptr2 + 1), result.at(ptr2))) {
+      result.erase(result.begin() + ptr2 + 1);
+    }
+    ptr1++;
+    ptr2 = ptr1;
+  }
+  return result;
+}
+```
+
 == Data logging code
 
 #codly()
@@ -285,7 +527,11 @@ if (argc > 1) {
 
 = Acknowledgements
 
+== Gen AI
+
 No Generative AI was used in writing this report or generating code.
+
+== Open source licenses
 
 This document was produced using the typesetting system
 #link("https://typst.app")[Typst]. Plotting code was derived from examples in

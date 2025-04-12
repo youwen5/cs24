@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <random>
+#include <unordered_set>
 #include <vector>
 using namespace std;
 
@@ -36,6 +37,57 @@ vector<vector<int>> threeSum(vector<int> &nums) {
   return result;
 }
 
+// assume vectors are same length
+bool vectorsAreEqual(const vector<int> &vec1, const vector<int> &vec2) {
+  for (unsigned i = 0; i < vec1.size(); i++) {
+    if (vec1.at(i) != vec2.at(i)) {
+      return false;
+    }
+  }
+  return true;
+}
+vector<vector<int>> threeSumOptimized(vector<int> &nums) {
+  vector<vector<int>> result;
+  unordered_set<int> set;
+  sort(nums.begin(), nums.end());
+  if (nums.at(nums.size() - 1) < 0 || nums.at(0) > 0) {
+    return result;
+  }
+  int ptr1;
+  int ptr2;
+
+  int sum;
+
+  for (ptr1 = 0; ptr1 < nums.size(); ptr1++) {
+    for (ptr2 = ptr1 + 1; ptr2 < nums.size(); ptr2++) {
+      if (set.contains(nums.at(ptr2))) {
+        vector<int> elem;
+        elem.push_back(nums.at(ptr1));
+        elem.push_back(nums.at(ptr2));
+        elem.push_back(-(nums.at(ptr1) + nums.at(ptr2)));
+        result.push_back(elem);
+      }
+      sum = nums.at(ptr1) + nums.at(ptr2);
+      set.insert(-sum);
+    }
+    set.clear();
+    while (ptr1 + 1 < nums.size() && nums.at(ptr1) == nums.at(ptr1 + 1)) {
+      ptr1++;
+    }
+  }
+  ptr1 = 0;
+  ptr2 = 0;
+  while (ptr1 < result.size()) {
+    while (ptr2 + 1 < result.size() &&
+           vectorsAreEqual(result.at(ptr2 + 1), result.at(ptr2))) {
+      result.erase(result.begin() + ptr2 + 1);
+    }
+    ptr1++;
+    ptr2 = ptr1;
+  }
+  return result;
+}
+
 double average(vector<double> vec) {
   double sum = 0;
   for (auto num : vec) {
@@ -46,7 +98,7 @@ double average(vector<double> vec) {
 
 int main(int argc, char *argv[]) {
   mt19937 gen(12345);
-  unsigned samplePoints[] = {100, 200, 400, 800, 1600, 3200};
+  unsigned samplePoints[] = {100, 200, 400, 800, 1600, 3200, 6400, 8000};
   vector<int> *nums;
   vector<vector<int>> *result;
   uniform_int_distribution<> distrib(-100000, 100000);
@@ -64,7 +116,7 @@ int main(int argc, char *argv[]) {
         nums->push_back(distrib(gen));
       }
       auto start = chrono::high_resolution_clock::now();
-      result = new vector<vector<int>>(threeSum(*nums));
+      result = new vector<vector<int>>(threeSumOptimized(*nums));
       auto end = chrono::high_resolution_clock::now();
       double time_ms =
           chrono::duration_cast<chrono::microseconds>(end - start).count() /
