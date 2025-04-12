@@ -276,13 +276,13 @@ $
             coords,
             mark: "o",
             line: "spline",
-            label: "Brute force",
+            label: "Optimized",
           )
           plot.add(
             unoptimized-coords,
             mark: "o",
             line: "spline",
-            label: "Optimized",
+            label: "Brute force",
           )
         },
       )
@@ -316,13 +316,13 @@ $
             coords,
             mark: "o",
             line: "linear",
-            label: "Brute force",
+            label: "Optimized",
           )
           plot.add(
             unoptimized-coords,
             mark: "o",
             line: "spline",
-            label: "Optimized",
+            label: "Brute force",
           )
         },
       )
