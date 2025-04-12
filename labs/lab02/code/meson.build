@@ -1,8 +1,15 @@
+# Define the project name, language (C++), and default options
 project(
-  'linked_list',
+  'intlist_project',
   'cpp',
-  version: '0.1.0',
-  default_options: ['warning_level=2', 'cpp_std=c++23'],
+  # Set default options equivalent to the Makefile CXX_FLAG
+  default_options: ['warning_level=1', 'cpp_std=c++11'],
 )
 
-executable('3sum_analysis', '3sum_analysis.cpp', install: true)
+intlist_sources = ['intlist.cpp']
+testlist_sources = ['testlist.cpp']
+testrest_sources = ['testrest.cpp']
+
+executable('testlist', testlist_sources + intlist_sources)
+
+executable('testrest', testrest_sources + intlist_sources)
