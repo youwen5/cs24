@@ -4,7 +4,7 @@
   stdenv,
 }:
 stdenv.mkDerivation {
-  name = "cs24-labs";
+  name = "cs24-lab01";
 
   src = ./.;
 
