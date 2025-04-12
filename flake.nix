@@ -25,16 +25,32 @@
         system:
         let
           pkgs = import nixpkgs { inherit system; };
+          resolvePackagesPath = builtins.map (x: "packages/preview/" + x);
+          mkTypstDerivation = pkgs.callPackage ./nix/mkTypstDerivation.nix { };
+          flakeSelf = self;
         in
         {
           labs = {
             lab01 = {
               code = pkgs.callPackage ./labs/lab01/code { };
               writeup = pkgs.callPackage ./labs/lab01/writeup {
-                inherit zen-typ;
-                flakeSelf = self;
-                resolvePackagesPath = builtins.map (x: "packages/preview/" + x);
-                mkTypstDerivation = pkgs.callPackage ./nix/mkTypstDerivation.nix { };
+                inherit
+                  zen-typ
+                  resolvePackagesPath
+                  mkTypstDerivation
+                  flakeSelf
+                  ;
+              };
+            };
+            lab02 = {
+              code = pkgs.callPackage ./labs/lab02/code { };
+              writeup = pkgs.callPackage ./labs/lab02/writeup {
+                inherit
+                  zen-typ
+                  resolvePackagesPath
+                  mkTypstDerivation
+                  flakeSelf
+                  ;
               };
             };
           };
