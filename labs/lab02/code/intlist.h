@@ -36,6 +36,15 @@ private:
 
   Node *head; // pointer to head node
   Node *tail; // pointer to the tail node
+              //
+  Node copyNode(Node *node) {
+    Node newNode = {
+        .info = node->info,
+        .next = node->next,
+    };
+    return newNode;
+  }
+  void clear();
 };
 
 #endif
