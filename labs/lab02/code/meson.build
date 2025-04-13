@@ -1,8 +1,6 @@
-# Define the project name, language (C++), and default options
 project(
   'intlist_project',
   'cpp',
-  # Set default options equivalent to the Makefile CXX_FLAG
   default_options: ['warning_level=1', 'cpp_std=c++11'],
 )
 
