@@ -10,6 +10,6 @@ intlist_sources = ['intlist.cpp']
 testlist_sources = ['testlist.cpp']
 testrest_sources = ['testrest.cpp']
 
-executable('testlist', testlist_sources + intlist_sources)
+executable('testlist', testlist_sources + intlist_sources, install: true)
 
-executable('testrest', testrest_sources + intlist_sources)
+executable('testrest', testrest_sources + intlist_sources, install: true)
