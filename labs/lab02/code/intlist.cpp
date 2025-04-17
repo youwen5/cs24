@@ -97,7 +97,7 @@ void IntList::push_front(int value) {
 
 // append value at end of list
 void IntList::push_back(int value) {
-  if (head == nullptr || head == tail) {
+  if (head == nullptr) {
     push_front(value);
     return;
   }
