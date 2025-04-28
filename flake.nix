@@ -73,6 +73,9 @@
             lab02 = {
               code = pkgs.callPackage ./labs/lab02/code { };
             };
+            lab03 = {
+              code = pkgs.callPackage ./labs/lab03 { };
+            };
           };
         }
       );
