@@ -8,22 +8,51 @@
 using std::cout;
 
 // constructor sets up empty tree
-IntBST::IntBST() {}
+IntBST::IntBST() { root = nullptr; }
 
 // destructor deletes all nodes
-IntBST::~IntBST() {}
+IntBST::~IntBST() { clear(root); }
 
 // recursive helper for destructor
-void IntBST::clear(Node *n) {}
+void IntBST::clear(Node *n) {
+  if (n == nullptr)
+    return;
+
+  clear(n->left);
+  clear(n->right);
+
+  delete n;
+}
 
 // insert value in tree; return false if duplicate
 bool IntBST::insert(int value) {
-  return false; // REPLACE THIS NON-SOLUTION
+  if (root == nullptr) {
+    root = new Node(value);
+    return true;
+  }
+
+  return insert(value, root);
 }
 
 // recursive helper for insert (assumes n is never 0)
 bool IntBST::insert(int value, Node *n) {
-  return false; // REPLACE THIS NON-SOLUTION
+  if (value < n->info) {
+    if (n->left == nullptr) {
+      n->left = new Node(value);
+      return true;
+    }
+    return insert(value, n->left);
+  }
+  if (value > n->info) {
+    if (n->right == nullptr) {
+      n->right = new Node(value);
+      return true;
+    }
+    return insert(value, n->right);
+  }
+
+  // trichotomy of ordered field
+  return false;
 }
 
 // print tree data pre-order
