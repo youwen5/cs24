@@ -92,23 +92,25 @@ void IntBST::printPostOrder(Node *n) const {
 }
 
 // return sum of values in tree
-int IntBST::sum() const {
-  return -1; // REPLACE THIS NON-SOLUTION
-}
+int IntBST::sum() const { return sum(root); }
 
 // recursive helper for sum
 int IntBST::sum(Node *n) const {
-  return -1; // REPLACE THIS NON-SOLUTION
+  if (n == nullptr)
+    return 0;
+
+  return n->info + sum(n->left) + sum(n->right);
 }
 
 // return count of values
-int IntBST::count() const {
-  return -1; // REPLACE THIS NON-SOLUTION
-}
+int IntBST::count() const { return count(root); }
 
 // recursive helper for count
 int IntBST::count(Node *n) const {
-  return -1; // REPLACE THIS NON-SOLUTION
+  if (n == nullptr)
+    return 0;
+
+  return 1 + count(n->left) + count(n->right);
 }
 
 // IMPLEMENT THIS FIRST: returns the node for a given value or NULL if none
@@ -116,12 +118,23 @@ int IntBST::count(Node *n) const {
 // start with (for a recursive call) Whenever you call this method from
 // somewhere else, pass it the root node as "n"
 IntBST::Node *IntBST::getNodeFor(int value, Node *n) const {
-  return NULL; // REPLACE THIS NON-SOLUTION
+  if (n == nullptr)
+    return NULL;
+
+  if (value < n->info) {
+    return getNodeFor(value, n->left);
+  }
+
+  if (value > n->info) {
+    return getNodeFor(value, n->right);
+  }
+
+  return n;
 }
 
 // returns true if value is in the tree; false if not
 bool IntBST::contains(int value) const {
-  return false; // REPLACE THIS NON-SOLUTION
+  return getNodeFor(value, root) != NULL;
 }
 
 // returns the Node containing the predecessor of the given value
