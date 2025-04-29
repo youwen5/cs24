@@ -93,6 +93,7 @@
               meson
               valgrind
               gdb
+              just
             ];
           };
         }

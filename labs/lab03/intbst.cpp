@@ -147,30 +147,6 @@ IntBST::Node *IntBST::getPredecessorNode(int value) const {
     return NULL;
 
   Node *ptrDown = ptrUp->left;
-
-  while (ptrUp != root) {
-    if (ptrUp->info < value) {
-      break;
-    }
-    ptrUp = ptrUp->parent;
-  }
-
-  while (ptrDown != nullptr) {
-    if (ptrDown->info < value) {
-      return ptrUp->info == value || ptrDown->info > ptrUp->info ? ptrDown
-                                                                 : ptrUp;
-    }
-    if (ptrDown->right->info < value) {
-      ptrDown = ptrDown->right;
-    } else {
-      ptrDown = ptrDown->left;
-    }
-  }
-
-  if (ptrUp->info == value || ptrUp->info > value) {
-    return NULL;
-  }
-  return ptrUp;
 }
 
 // returns the predecessor value of the given value or 0 if there is none

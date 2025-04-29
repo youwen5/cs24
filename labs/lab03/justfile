@@ -1,0 +1,7 @@
+[working-directory: "build"]
+default:
+  ninja
+  ./testbst
+
+setup:
+  meson setup build
