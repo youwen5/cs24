@@ -1,0 +1,12 @@
+[working-directory: "build"]
+testlist:
+  ninja
+  ./testlist
+
+[working-directory: "build"]
+testrest:
+  ninja
+  ./testrest
+
+setup:
+  meson setup build
