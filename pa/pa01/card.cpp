@@ -54,8 +54,8 @@ bool Card::operator>(const Card &c) const {
   return !(*this < c) && (*this != c);
 }
 bool Card::operator>=(const Card &c) const {
-  return (*this > c) && (*this == c);
+  return (*this > c) || (*this == c);
 }
 bool Card::operator<=(const Card &c) const {
-  return (*this < c) && (*this == c);
+  return (*this < c) || (*this == c);
 }
