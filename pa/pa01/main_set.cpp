@@ -55,18 +55,18 @@ int main(int argv, char **argc) {
     keep_playing = false;
     for (auto card : alice_hand) {
       if (bob_hand.erase(card) > 0) {
+        cout << "Alice picked matching card " << card << endl;
         alice_hand.erase(card);
         keep_playing = true;
-        cout << "Alice picked matching card " << card << endl;
         ;
         break;
       }
     }
     for (auto rit = bob_hand.rbegin(); rit != bob_hand.rend(); rit++) {
       if (alice_hand.erase(*rit) > 0) {
+        cout << "Bob picked matching card " << (*rit) << endl;
         bob_hand.erase(*rit);
         keep_playing = true;
-        cout << "Bob picked matching card " << (*rit) << endl;
         break;
       }
     }
