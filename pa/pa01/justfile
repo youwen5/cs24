@@ -16,6 +16,9 @@ run-game +FILES: build
 test: build
     meson test -C build
 
+[working-directory: 'build']
+rawtest: build
+    ./tests
 
 all: build
 
