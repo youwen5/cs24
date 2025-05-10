@@ -40,12 +40,10 @@ Card::Card(char suit, string val) {
 }
 
 bool Card::operator<(const Card &c) const {
-  if (get_suit() < c.get_suit())
-    return true;
-  if (get_suit() > c.get_suit())
-    return false;
-
-  return val < c.val;
+  if (get_suit() == c.get_suit()) {
+    return val < c.val;
+  }
+  return get_suit() < c.get_suit();
 }
 
 bool Card::operator==(const Card &c) const {
