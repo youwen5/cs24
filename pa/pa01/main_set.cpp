@@ -58,7 +58,6 @@ int main(int argv, char **argc) {
         cout << "Alice picked matching card " << card << endl;
         alice_hand.erase(card);
         keep_playing = true;
-        ;
         break;
       }
     }
