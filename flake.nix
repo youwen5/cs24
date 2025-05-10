@@ -73,9 +73,13 @@
             lab02 = {
               code = pkgs.callPackage ./labs/lab02/code { };
             };
-            lab03 = {
-              code = pkgs.callPackage ./labs/lab03 { };
-            };
+            # broken for now
+            # lab03 = {
+            #   code = pkgs.callPackage ./labs/lab03 { };
+            # };
+          };
+          prog-assignments = {
+            pa01 = pkgs.callPackage ./pa/pa01 { };
           };
         }
       );
