@@ -1,3 +1,5 @@
+default: (run-game-set "../acards.txt" "../bcards.txt")
+
 setup:
     meson setup build
 
@@ -6,18 +8,17 @@ build:
     ninja
 
 [working-directory: 'build']
-run-game-set: build
-    ./game_set
+run-game-set +FILES: build
+    ./game_set {{FILES}}
 
 [working-directory: 'build']
-run-game: build
-    ./game
+run-game +FILES: build
+    ./game {{FILES}}
 
 test: build
     echo "+++ Running tests..."
     meson test -C build
 
-default: build
 
 all: build
 
