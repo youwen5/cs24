@@ -88,15 +88,19 @@
         in
         {
           default = pkgs.mkShell {
-            packages = with pkgs; [
-              clang-tools
-              mesonlsp
-              ninja
-              meson
-              valgrind
-              gdb
-              just
-            ];
+            packages =
+              with pkgs;
+              [
+                clang-tools
+                ninja
+                meson
+                gdb
+                just
+              ]
+              ++ (lib.optionals (!stdenv.isDarwin) [
+                valgrind
+                mesonlsp
+              ]);
           };
         }
       );
