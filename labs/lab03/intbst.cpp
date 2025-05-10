@@ -142,11 +142,32 @@ bool IntBST::contains(int value) const {
 // returns the Node containing the predecessor of the given value
 IntBST::Node *IntBST::getPredecessorNode(int value) const {
   Node *ptrUp = getNodeFor(value, root);
-
   if (ptrUp == NULL)
-    return NULL;
+    return 0;
 
   Node *ptrDown = ptrUp->left;
+  while (ptrUp->parent != nullptr && ptrUp->parent->info > value) {
+    ptrUp = ptrUp->parent;
+  }
+
+  if (ptrDown == nullptr) {
+    if (ptrUp->info >= value) {
+      return NULL;
+    }
+    return ptrUp;
+  }
+
+  while (ptrDown->right != nullptr) {
+    if (ptrDown->right->info < value) {
+      ptrDown = ptrDown->right;
+    }
+  }
+
+  if (ptrUp->info > ptrDown->info && ptrUp->info != value) {
+    return ptrUp;
+  } else {
+    return ptrDown;
+  }
 }
 
 // returns the predecessor value of the given value or 0 if there is none
@@ -161,30 +182,34 @@ int IntBST::getPredecessor(int value) const {
 // returns the Node containing the successor of the given value
 IntBST::Node *IntBST::getSuccessorNode(int value) const {
   Node *ptrUp = getNodeFor(value, root);
+
   if (ptrUp == NULL)
     return NULL;
 
   Node *ptrDown = ptrUp->right;
 
-  while (ptrUp != root) {
-    if (ptrUp->info > value) {
-      break;
-    }
+  while (ptrUp->parent != nullptr && ptrUp->parent->info < value) {
     ptrUp = ptrUp->parent;
   }
 
-  while (ptrDown != nullptr) {
-    if (ptrDown->info > value) {
-      return ptrDown->info < ptrUp->info ? ptrDown : ptrUp;
+  if (ptrDown == nullptr) {
+    if (ptrUp->info <= value) {
+      return NULL;
     }
-    if (ptrDown->left->info > value) {
+    return ptrUp;
+  }
+
+  while (ptrDown->left != nullptr) {
+    if (ptrDown->left->info < value) {
       ptrDown = ptrDown->left;
-    } else {
-      ptrDown = ptrDown->right;
     }
   }
 
-  return NULL;
+  if (ptrUp->info < ptrDown->info && ptrUp->info != value) {
+    return ptrUp;
+  } else {
+    return ptrDown;
+  }
 }
 
 // returns the successor value of the given value or 0 if there is none
