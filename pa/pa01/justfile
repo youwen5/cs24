@@ -1,0 +1,31 @@
+setup:
+    meson setup build
+
+[working-directory: 'build']
+build:
+    ninja
+
+[working-directory: 'build']
+run-game-set: build
+    ./game_set
+
+[working-directory: 'build']
+run-game: build
+    ./game
+
+test: build
+    echo "+++ Running tests..."
+    meson test -C build
+
+default: build
+
+all: build
+
+clean:
+    rm -rf build
+
+reconfigure:
+    meson setup --reconfigure build
+
+help:
+    just --list
