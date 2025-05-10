@@ -22,6 +22,7 @@ public:
   Suit get_suit() const { return suit; }
   int get_val() const { return val; }
   char get_suit_as_char() const;
+  std::string get_val_as_str() const;
   friend std::ostream &operator<<(std::ostream &, const Card &);
 
 private:

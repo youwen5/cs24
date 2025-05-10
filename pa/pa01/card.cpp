@@ -73,7 +73,23 @@ char Card::get_suit_as_char() const {
   }
 }
 
+string Card::get_val_as_str() const {
+  if (val >= 2 && val <= 10) {
+    return to_string(val);
+  }
+  switch (val) {
+  case 1:
+    return "a";
+  case 11:
+    return "j";
+  case 12:
+    return "q";
+  case 13:
+    return "k";
+  }
+}
+
 ostream &operator<<(ostream &os, const Card &c) {
-  os << c.get_suit_as_char() << " " << c.get_val();
+  os << c.get_suit_as_char() << " " << c.get_val_as_str();
   return os;
 }
