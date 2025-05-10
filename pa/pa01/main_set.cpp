@@ -74,12 +74,16 @@ int main(int argv, char **argc) {
     }
   }
 
-  cout << "Final hand of Alice: " << endl;
+  cout << endl;
+
+  cout << "Alice's cards:" << endl;
   for (auto card : alice_hand) {
     cout << card.get_suit() << " " << card.get_val() << endl;
   }
 
-  cout << "Final hand of Bob: " << endl;
+  cout << endl;
+
+  cout << "Bob's cards:" << endl;
   for (auto card : bob_hand) {
     cout << card.get_suit() << " " << card.get_val() << endl;
   }
