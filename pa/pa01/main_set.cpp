@@ -9,19 +9,14 @@
 
 using namespace std;
 
-int main(int argv, char **argc) {
-  if (argv < 3) {
-    cout << "Please provide 2 file names" << endl;
-    return 1;
-  }
-
-  ifstream cardFile1(argc[1]);
-  ifstream cardFile2(argc[2]);
+pair<set<Card>, set<Card>> read_cards(string file1, string file2) {
+  ifstream cardFile1(file1);
+  ifstream cardFile2(file2);
   string line;
 
   if (cardFile1.fail() || cardFile2.fail()) {
-    cout << "Could not open file " << argc[2];
-    return 1;
+    cout << "Could not open file " << file1;
+    throw;
   }
 
   set<Card> alice_hand;
@@ -48,7 +43,10 @@ int main(int argv, char **argc) {
   }
   cardFile2.close();
 
-  // play the game
+  return pair<set<Card>, set<Card>>(alice_hand, bob_hand);
+}
+
+void run_game(set<Card> alice_hand, set<Card> bob_hand) {
   bool keep_playing = true;
 
   while (keep_playing) {
@@ -84,6 +82,17 @@ int main(int argv, char **argc) {
   for (auto card : bob_hand) {
     cout << card << endl;
   }
+}
+
+int main(int argv, char **argc) {
+  if (argv < 3) {
+    cout << "Please provide 2 file names" << endl;
+    return 1;
+  }
+
+  auto cards = read_cards(argc[1], argc[2]);
+
+  run_game(cards.first, cards.second);
 
   return 0;
 }
