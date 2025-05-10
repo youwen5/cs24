@@ -36,6 +36,7 @@ int main(int argv, char **argc) {
     str = stringstream(line);
     str >> suit;
     str >> val;
+    alice_hand.insert(Card(suit, val));
   }
   cardFile1.close();
 
@@ -43,8 +44,45 @@ int main(int argv, char **argc) {
     str = stringstream(line);
     str >> suit;
     str >> val;
+    bob_hand.insert(Card(suit, val));
   }
   cardFile2.close();
+
+  // play the game
+  bool keep_playing = true;
+
+  while (keep_playing) {
+    keep_playing = false;
+    for (auto card : alice_hand) {
+      if (bob_hand.erase(card) > 0) {
+        alice_hand.erase(card);
+        keep_playing = true;
+        cout << "Alice picked matching card " << card.get_suit() << " "
+             << card.get_val() << endl;
+        ;
+        break;
+      }
+    }
+    for (auto rit = bob_hand.rbegin(); rit != bob_hand.rend(); rit++) {
+      if (alice_hand.erase(*rit) > 0) {
+        bob_hand.erase(*rit);
+        keep_playing = true;
+        cout << "Bob picked matching card " << rit->get_suit() << " "
+             << rit->get_val() << endl;
+        break;
+      }
+    }
+  }
+
+  cout << "Final hand of Alice: " << endl;
+  for (auto card : alice_hand) {
+    cout << card.get_suit() << " " << card.get_val() << endl;
+  }
+
+  cout << "Final hand of Bob: " << endl;
+  for (auto card : bob_hand) {
+    cout << card.get_suit() << " " << card.get_val() << endl;
+  }
 
   return 0;
 }

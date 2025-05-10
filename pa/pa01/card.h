@@ -25,5 +25,4 @@ private:
   Suit suit;
   // between 1 (ace) - 13 (11,12,13 are JQK)
   int val;
-  // obtain an integer representation of the order of the suits (0-3 inclusive)
 };
