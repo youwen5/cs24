@@ -70,9 +70,7 @@
                 unixTime = builtins.toString flakeSelf.lastModified;
               };
             };
-            lab02 = {
-              code = pkgs.callPackage ./labs/lab02/code { };
-            };
+            lab02 = pkgs.callPackage ./labs/lab02 { };
             # broken for now
             # lab03 = {
             #   code = pkgs.callPackage ./labs/lab03 { };
