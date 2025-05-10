@@ -59,3 +59,21 @@ bool Card::operator>=(const Card &c) const {
 bool Card::operator<=(const Card &c) const {
   return (*this < c) || (*this == c);
 }
+
+char Card::get_suit_as_char() const {
+  switch (suit) {
+  case Clubs:
+    return 'c';
+  case Diamonds:
+    return 'd';
+  case Hearts:
+    return 'h';
+  case Spades:
+    return 's';
+  }
+}
+
+ostream &operator<<(ostream &os, const Card &c) {
+  os << c.get_suit_as_char() << " " << c.get_val();
+  return os;
+}

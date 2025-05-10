@@ -3,6 +3,7 @@
 // All class declarations related to defining a single card go here
 
 #pragma once
+#include <ostream>
 #include <string>
 
 enum Suit { Clubs, Diamonds, Spades, Hearts };
@@ -20,6 +21,8 @@ public:
   bool operator>=(const Card &) const;
   Suit get_suit() const { return suit; }
   int get_val() const { return val; }
+  char get_suit_as_char() const;
+  friend std::ostream &operator<<(std::ostream &, const Card &);
 
 private:
   Suit suit;

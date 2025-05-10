@@ -57,8 +57,7 @@ int main(int argv, char **argc) {
       if (bob_hand.erase(card) > 0) {
         alice_hand.erase(card);
         keep_playing = true;
-        cout << "Alice picked matching card " << card.get_suit() << " "
-             << card.get_val() << endl;
+        cout << "Alice picked matching card " << card << endl;
         ;
         break;
       }
@@ -67,8 +66,7 @@ int main(int argv, char **argc) {
       if (alice_hand.erase(*rit) > 0) {
         bob_hand.erase(*rit);
         keep_playing = true;
-        cout << "Bob picked matching card " << rit->get_suit() << " "
-             << rit->get_val() << endl;
+        cout << "Bob picked matching card " << (*rit) << endl;
         break;
       }
     }
@@ -78,14 +76,14 @@ int main(int argv, char **argc) {
 
   cout << "Alice's cards:" << endl;
   for (auto card : alice_hand) {
-    cout << card.get_suit() << " " << card.get_val() << endl;
+    cout << card << endl;
   }
 
   cout << endl;
 
   cout << "Bob's cards:" << endl;
   for (auto card : bob_hand) {
-    cout << card.get_suit() << " " << card.get_val() << endl;
+    cout << card << endl;
   }
 
   return 0;
