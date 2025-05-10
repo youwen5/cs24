@@ -1,7 +1,7 @@
 project(
   'pa01',
   'cpp',
-  default_options: ['cpp_std=c++20', 'warning_level=2', 'debug=true', 'b_lundef=false'],
+  default_options: ['cpp_std=c++20', 'warning_level=2', 'b_lundef=false'],
 )
 
 executable(
