@@ -11,7 +11,10 @@ using std::cout;
 IntBST::IntBST() { root = nullptr; }
 
 // destructor deletes all nodes
-IntBST::~IntBST() { clear(root); }
+IntBST::~IntBST() {
+  clear(root);
+  root = nullptr;
+}
 
 // recursive helper for destructor
 void IntBST::clear(Node *n) {
@@ -115,10 +118,6 @@ int IntBST::count(Node *n) const {
   return 1 + count(n->left) + count(n->right);
 }
 
-// IMPLEMENT THIS FIRST: returns the node for a given value or NULL if none
-// exists Parameters: int value: the value to be found Node* n: the node to
-// start with (for a recursive call) Whenever you call this method from
-// somewhere else, pass it the root node as "n"
 IntBST::Node *IntBST::getNodeFor(int value, Node *n) const {
   if (n == nullptr)
     return NULL;
@@ -141,39 +140,35 @@ bool IntBST::contains(int value) const {
 
 // returns the Node containing the predecessor of the given value
 IntBST::Node *IntBST::getPredecessorNode(int value) const {
-  Node *ptrUp = getNodeFor(value, root);
-  if (ptrUp == NULL)
-    return 0;
+  Node *n = getNodeFor(value, root);
 
   Node *ptrDown = ptrUp->left;
   while (ptrUp->parent != nullptr && ptrUp->parent->info > value) {
     ptrUp = ptrUp->parent;
   }
 
-  if (ptrDown == nullptr) {
-    if (ptrUp->info >= value) {
-      return NULL;
+  if (n->left) {
+    Node *current = n->left;
+    while (current->right) {
+      current = current->right;
     }
-    return ptrUp;
+    return current;
   }
 
-  while (ptrDown->right != nullptr) {
-    if (ptrDown->right->info < value) {
-      ptrDown = ptrDown->right;
-    }
-  }
+  Node *current = n;
+  Node *p = current->parent;
 
-  if (ptrUp->info > ptrDown->info && ptrUp->info != value) {
-    return ptrUp;
-  } else {
-    return ptrDown;
+  while (p != nullptr && current == p->left) {
+    current = p;
+    p = p->parent;
   }
+  return p;
 }
 
 // returns the predecessor value of the given value or 0 if there is none
 int IntBST::getPredecessor(int value) const {
   Node *node = getPredecessorNode(value);
-  if (node == NULL)
+  if (node == nullptr)
     return 0;
 
   return node->info;
@@ -181,35 +176,29 @@ int IntBST::getPredecessor(int value) const {
 
 // returns the Node containing the successor of the given value
 IntBST::Node *IntBST::getSuccessorNode(int value) const {
-  Node *ptrUp = getNodeFor(value, root);
+  Node *currentNode = getNodeFor(value, root);
 
-  if (ptrUp == NULL)
-    return NULL;
-
-  Node *ptrDown = ptrUp->right;
-
-  while (ptrUp->parent != nullptr && ptrUp->parent->info < value) {
-    ptrUp = ptrUp->parent;
+  if (!currentNode) {
+    return nullptr;
   }
 
-  if (ptrDown == nullptr) {
-    if (ptrUp->info <= value) {
-      return NULL;
+  if (currentNode->right) {
+    Node *successorNode = currentNode->right;
+    while (successorNode->left) {
+      successorNode = successorNode->left;
     }
-    return ptrUp;
+    return successorNode;
   }
 
-  while (ptrDown->left != nullptr) {
-    if (ptrDown->left->info < value) {
-      ptrDown = ptrDown->left;
-    }
+  Node *parentNode = currentNode->parent;
+  Node *childNode = currentNode;
+
+  while (parentNode != nullptr && childNode == parentNode->right) {
+    childNode = parentNode;
+    parentNode = parentNode->parent;
   }
 
-  if (ptrUp->info < ptrDown->info && ptrUp->info != value) {
-    return ptrUp;
-  } else {
-    return ptrDown;
-  }
+  return parentNode;
 }
 
 // returns the successor value of the given value or 0 if there is none
@@ -225,5 +214,61 @@ int IntBST::getSuccessor(int value) const {
 // returns true if the node exist and was deleted or false if the node does not
 // exist
 bool IntBST::remove(int value) {
-  return false; // REPLACE THIS NON-SOLUTION
+  Node *nodeToRemove = getNodeFor(value, root);
+
+  if (!nodeToRemove) {
+    return false;
+  }
+
+  Node *parent = nodeToRemove->parent;
+
+  if (nodeToRemove->left == nullptr && nodeToRemove->right == nullptr) {
+    if (nodeToRemove == root) {
+      root = nullptr;
+    } else if (parent->left == nodeToRemove) {
+      parent->left = nullptr;
+    } else {
+      parent->right = nullptr;
+    }
+    delete nodeToRemove;
+    return true;
+  } else if (nodeToRemove->left == nullptr || nodeToRemove->right == nullptr) {
+    Node *child = (nodeToRemove->left != nullptr) ? nodeToRemove->left
+                                                  : nodeToRemove->right;
+    child->parent = parent;
+
+    if (nodeToRemove == root) {
+      root = child;
+    } else if (parent->left == nodeToRemove) {
+      parent->left = child;
+    } else {
+      parent->right = child;
+    }
+    delete nodeToRemove;
+    return true;
+  }
+
+  Node *successor = nodeToRemove->right;
+  while (successor->left != nullptr) {
+    successor = successor->left;
+  }
+
+  int successorValue = successor->info;
+  nodeToRemove->info = successorValue;
+
+  Node *successorParent = successor->parent;
+  Node *successorChild = successor->right;
+
+  if (successorChild != nullptr) {
+    successorChild->parent = successorParent;
+  }
+
+  if (successorParent->left == successor) {
+    successorParent->left = successorChild;
+  } else {
+    successorParent->right = successorChild;
+  }
+
+  delete successor;
+  return true;
 }
