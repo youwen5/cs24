@@ -87,6 +87,7 @@ string Card::get_val_as_str() const {
   case 13:
     return "k";
   }
+  throw;
 }
 
 ostream &operator<<(ostream &os, const Card &c) {
