@@ -2,12 +2,47 @@
 // a BST (that is based on your implementation from lab02)
 #include "card.h"
 #include "card_list.h"
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 // Do not include set in this file
 
 using namespace std;
+
+void test_insert() {
+  CardList c;
+  vector<Card> card_vec;
+  card_vec.push_back(Card('c', "a"));
+  card_vec.push_back(Card('s', "5"));
+  card_vec.push_back(Card('h', "3"));
+
+  for (auto i : card_vec) {
+    c.insert(i);
+  }
+
+  c.printDeck();
+}
+
+void test_contains() {
+  CardList c;
+  vector<Card> card_vec;
+  card_vec.push_back(Card('c', "a"));
+  card_vec.push_back(Card('s', "5"));
+  card_vec.push_back(Card('h', "3"));
+
+  for (auto i : card_vec) {
+    c.insert(i);
+  }
+
+  Card not_in = Card('h', "4");
+
+  cout << "test contains 1" << endl;
+  assert(c.contains(card_vec.at(0)));
+  cout << "test contains 2" << endl;
+  assert(!c.contains(not_in));
+}
 
 int main(int argv, char **argc) {
   if (argv < 3) {
@@ -32,6 +67,9 @@ int main(int argv, char **argc) {
   while (getline(cardFile2, line) && (line.length() > 0)) {
   }
   cardFile2.close();
+
+  test_insert();
+  test_contains();
 
   return 0;
 }

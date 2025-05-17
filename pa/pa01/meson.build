@@ -12,7 +12,7 @@ executable(
 
 executable(
   'game',
-  ['main.cpp', 'card_list.cpp'], # card_list.h is implicitly found
+  ['main.cpp', 'card_list.cpp', 'card.cpp'], # card_list.h is implicitly found
   install: true,
 )
 
