@@ -71,6 +71,7 @@ char Card::get_suit_as_char() const {
   case Spades:
     return 's';
   }
+  return '?';
 }
 
 string Card::get_val_as_str() const {

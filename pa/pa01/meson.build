@@ -6,7 +6,7 @@ project(
 
 executable(
   'game_set',
-  ['main_set.cpp', 'card.cpp', 'game_set.cpp'], # card.h is implicitly found
+  ['main_set.cpp', 'card.cpp'], # card.h is implicitly found
   install: true,
 )
 
@@ -16,6 +16,6 @@ executable(
   install: true,
 )
 
-tests_exe = executable('tests', ['tests.cpp', 'card.cpp', 'card_list.cpp', 'game_set.cpp'])
+tests_exe = executable('tests', ['tests.cpp', 'card.cpp', 'card_list.cpp'])
 
 test('unit_tests', tests_exe)
