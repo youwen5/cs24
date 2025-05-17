@@ -3,7 +3,8 @@
 // All class declarations related to defining a BST that represents a player's
 // hand
 
-#pragma once
+#ifndef __CARD_LIST_H__
+#define __CARD_LIST_H__
 
 #include "card.h"
 #include <iterator>
@@ -116,3 +117,4 @@ private:
     return newNode;
   }
 };
+#endif

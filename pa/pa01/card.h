@@ -2,7 +2,8 @@
 // Author: Youwen Wu
 // All class declarations related to defining a single card go here
 
-#pragma once
+#ifndef __CARD_H__
+#define __CARD_H__
 #include <ostream>
 #include <string>
 
@@ -30,3 +31,4 @@ private:
   // between 1 (ace) - 13 (11,12,13 are JQK)
   int val;
 };
+#endif
