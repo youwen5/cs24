@@ -63,7 +63,7 @@ void run_game_bst(CardList alice_hand, CardList bob_hand, ostream &os) {
         break;
       }
     }
-    for (auto rit = bob_hand.begin(); rit != bob_hand.end(); rit++) {
+    for (auto rit = bob_hand.rbegin(); rit != bob_hand.rend(); rit++) {
       if (alice_hand.remove(*rit) > 0) {
         os << "Bob picked matching card " << (*rit) << endl;
         bob_hand.remove(*rit);
