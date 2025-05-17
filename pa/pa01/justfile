@@ -30,3 +30,6 @@ reconfigure:
 
 help:
     just --list
+
+memtest +FILES: build
+    valgrind ./build/game_set {{FILES}}
